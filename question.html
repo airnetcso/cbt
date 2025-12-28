@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soal Ujian Korea</title>
+    <title>Soal Ujian</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f9fa; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
-        .top-bar { background: white; padding: 15px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; font-size: 22px; font-weight: bold; color: #2c3e50; }
+        .top-bar { background: white; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; font-size: 20px; font-weight: bold; color: #2c3e50; }
         .content { flex: 1; display: flex; flex-direction: column; padding: 20px; gap: 20px; }
         @media (min-width: 768px) { .content { flex-direction: row; } }
         .options-column { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .question-column { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); flex: 1; }
         .question-text { font-size: 1.5em; line-height: 1.8; }
-        .question-img { max-width: 100%; height: auto; margin-top: 20px; border-radius: 8px; }
-        .audio-control { text-align: center; margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 10px; }
+        .question-img { max-width: 100%; margin-top: 20px; border-radius: 8px; }
+        .audio-control { margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 10px; text-align: center; }
         audio { width: 100%; max-width: 400px; }
         .replay-btn { background: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
         .replay-btn:disabled { background: #bdc3c7; cursor: not-allowed; }
         .replay-count { display: block; margin-top: 10px; font-weight: bold; color: #e74c3c; }
-        .options label { display: block; padding: 18px; margin: 10px 0; background: #ecf0f1; border-radius: 10px; cursor: pointer; font-size: 18px; transition: all 0.3s; }
+        .options label { display: block; padding: 18px; margin: 10px 0; background: #ecf0f1; border-radius: 10px; cursor: pointer; font-size: 18px; }
         .options label:hover { background: #d5dbdb; }
-        .bottom-nav { background: white; padding: 15px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .bottom-nav { background: white; padding: 15px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
         .nav-btn { padding: 14px 20px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; flex: 1; min-width: 100px; }
         .prev-btn { background: #3498db; color: white; }
         .back-btn { background: #e91e63; color: white; }
@@ -36,28 +36,71 @@
         </div>
         <div class="question-column">
             <div class="question-text" id="questionText">Memuat soal...</div>
-            <img id="questionImg" class="question-img" style="display:none;" alt="Gambar soal">
+            <img id="questionImg" class="question-img" style="display:none;">
             <div class="audio-control" id="audioControl" style="display:none;">
                 <audio id="audioPlayer" controls></audio>
-                <button class="replay-btn" id="replayBtn" onclick="replayAudio()">Replay dari Awal</button>
+                <button class="replay-btn" id="replayBtn">Replay dari Awal</button>
                 <span class="replay-count" id="replayCount">Sisa kesempatan dengar: 2</span>
             </div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <button class="nav-btn prev-btn" id="prevBtn" onclick="goPrev()">◄ Sebelumnya</button>
-        <button class="nav-btn back-btn" onclick="goBack()">Kembali ke Navigasi</button>
-        <button class="nav-btn next-btn" id="nextBtn" onclick="goNext()">Berikutnya ►</button>
+        <button class="nav-btn prev-btn" id="prevBtn">◄ Sebelumnya</button>
+        <button class="nav-btn back-btn">Kembali ke Navigasi</button>
+        <button class="nav-btn next-btn" id="nextBtn">Berikutnya ►</button>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        let currentQ = parseInt(urlParams.get('q')) || 0;
+        const currentQ = parseInt(urlParams.get('q')) || 0;
         let answers = JSON.parse(localStorage.getItem('answers')) || new Array(40).fill(null);
-        let playCount = 0; // Total play/replay, max 2
+        let playCount = 2;
 
-        const questions = [ /* Array questions sama seperti versi sebelumnya, dengan audio & image */ ];
+        const questions = [
+            // Listening 1-20
+            { question: "Dengarkan percakapan. Apa yang dipesan oleh pelanggan di restoran?", options: ["Bibimbap", "Kimchi jjigae", "Bulgogi", "Samgyeopsal"], answer: 0, audio: "audio/audio1.mp3", image: "images/listening1.jpg" },
+            { question: "Dengarkan dan pilih ucapan selamat tinggal yang benar.", options: ["안녕하세요", "감사합니다", "안녕히 가세요", "좋은 하루 되세요"], answer: 2, audio: "audio/audio2.mp3" },
+            { question: "Apa arti dari percakapan di stasiun kereta?", options: ["Mau ke Busan", "Mau ke Jeju", "Mau ke Seoul", "Mau ke Incheon"], answer: 2, audio: "audio/audio3.mp3", image: "images/listening3.jpg" },
+            { question: "Dengarkan pengumuman. Kereta berangkat pukul berapa?", options: ["10:30", "11:00", "11:30", "12:00"], answer: 1, audio: "audio/audio4.mp3" },
+            { question: "Di mana tempat yang dibicarakan dalam dialog?", options: ["Rumah sakit", "Sekolah", "Toko buku", "Kafe"], answer: 3, audio: "audio/audio5.mp3", image: "images/listening5.jpg" },
+            { question: "Apa hobi yang disebutkan oleh pembicara?", options: ["Berenang", "Membaca buku", "Menonton drama", "Bermain game"], answer: 2, audio: "audio/audio6.mp3" },
+            { question: "Dengarkan ramalan cuaca. Besok cuacanya bagaimana?", options: ["Cerah", "Hujan", "Berawan", "Salju"], answer: 1, audio: "audio/audio7.mp3", image: "images/listening7.jpg" },
+            { question: "Pembicara sedang membicarakan musim apa?", options: ["Musim semi", "Musim panas", "Musim gugur", "Musim dingin"], answer: 2, audio: "audio/audio8.mp3" },
+            { question: "Apa nama makanan yang disebutkan?", options: ["Tteokbokki", "Kimbap", "Ramyeon", "Jajangmyeon"], answer: 0, audio: "audio/audio9.mp3", image: "images/listening9.jpg" },
+            { question: "Berapa harga tiket yang disebutkan?", options: ["15,000 won", "20,000 won", "25,000 won", "30,000 won"], answer: 1, audio: "audio/audio10.mp3" },
+            { question: "Dengarkan instruksi. Ke mana harus berbelok?", options: ["Kiri", "Kanan", "Lurus", "Putar balik"], answer: 1, audio: "audio/audio11.mp3", image: "images/listening11.jpg" },
+            { question: "Apa pekerjaan orang yang diwawancarai?", options: ["Dokter", "Guru", "Programmer", "Desainer"], answer: 2, audio: "audio/audio12.mp3" },
+            { question: "Dengarkan dan pilih jawaban yang tepat untuk '어디 살아요?'", options: ["서울", "학교", "집", "회사"], answer: 0, audio: "audio/audio13.mp3" },
+            { question: "Pembicara sedang memesan berapa orang?", options: ["2 orang", "3 orang", "4 orang", "5 orang"], answer: 2, audio: "audio/audio14.mp3" },
+            { question: "Apa yang hilang dari pembicara?", options: ["Dompet", "Ponsel", "Kunci", "Tas"], answer: 1, audio: "audio/audio15.mp3" },
+            { question: "Dengarkan jam. Sekarang jam berapa?", options: ["3:15", "3:30", "3:45", "4:00"], answer: 2, audio: "audio/audio16.mp3" },
+            { question: "Apa hubungan antara kedua pembicara?", options: ["Teman", "Kakak-adik", "Guru-murid", "Atasan-bawahan"], answer: 0, audio: "audio/audio17.mp3" },
+            { question: "Di mana percakapan ini terjadi?", options: ["Bandara", "Terminal bus", "Stasiun kereta", "Pelabuhan"], answer: 0, audio: "audio/audio18.mp3" },
+            { question: "Apa rencana akhir pekan pembicara?", options: ["Pergi hiking", "Nonton bioskop", "Belanja", "Tidur"], answer: 1, audio: "audio/audio19.mp3" },
+            { question: "Pembicara menyukai K-pop grup apa?", options: ["BTS", "BLACKPINK", "TWICE", "EXO"], answer: 0, audio: "audio/audio20.mp3" },
+            // Reading 21-40
+            { question: "Baca teks: '저는 매일 아침 7시에 일어나요. 그리고 학교에 가요.'<br>Pembicara bangun jam berapa?", options: ["6 pagi", "7 pagi", "8 pagi", "9 pagi"], answer: 1, image: "images/reading21.jpg" },
+            { question: "Baca: '이 가게는 10시부터 9시까지 영업해요.'<br>Toko buka sampai jam berapa?", options: ["8 malam", "9 malam", "10 malam", "11 malam"], answer: 1 },
+            { question: "Baca pengumuman: '내일 학교 쉬어요.'<br>Artinya besok...", options: ["Ada ujian", "Libur sekolah", "Ada acara", "Masuk seperti biasa"], answer: 1, image: "images/reading23.jpg" },
+            { question: "Baca: '김치찌개는 매워요. 불고기는 달아요.'<br>Makanan mana yang pedas?", options: ["Bibimbap", "Kimchi jjigae", "Bulgogi", "Kimbap"], answer: 1 },
+            { question: "Baca teks tentang Seoul. Ibukota Korea adalah...", options: ["Busan", "Incheon", "Seoul", "Jeju"], answer: 2, image: "images/reading25.jpg" },
+            { question: "Baca: '한글은 세종대왕이 만들었어요.'<br>Siapa yang menciptakan Hangul?", options: ["Yi Sun-sin", "Sejong Agung", "Gwanggaeto", "Dae Jo-yeong"], answer: 1 },
+            { question: "Baca jadwal kereta: '서울 → 부산 14:30 출발'<br>Kereta berangkat jam...", options: ["13:30", "14:00", "14:30", "15:00"], answer: 2, image: "images/reading27.jpg" },
+            { question: "Baca menu: '아메리카노 4,000원, 카페라떼 4,500원'<br>Yang lebih mahal adalah...", options: ["Americano", "Cafe latte", "Kedua sama", "Tidak disebutkan"], answer: 1 },
+            { question: "Baca: '제 취미는 독서예요. 책을 좋아해요.'<br>Hobi pembicara adalah...", options: ["Olahraga", "Membaca buku", "Musik", "Memasak"], answer: 1, image: "images/reading29.jpg" },
+            { question: "Baca ramalan cuaca: '주말에 비가 와요.'<br>Akhir pekan akan...", options: ["Cerah", "Hujan", "Berangin", "Salju"], answer: 1 },
+            { question: "Baca: '한국 드라마를 자주 봐요. 특히 로맨틱 코미디를 좋아해요.'<br>Pembicara suka drama genre...", options: ["Thriller", "Romantic comedy", "Historical", "Action"], answer: 1, image: "images/reading31.jpg" },
+            { question: "Baca papan nama: '출구 →'<br>Artinya arah ke...", options: ["Masuk", "Keluar", "Toilet", "Tangga"], answer: 1 },
+            { question: "Baca: '이 옷은 작아요. 큰 사이즈 있어요?'<br>Pembicara bilang baju itu...", options: ["Terlalu besar", "Terlalu kecil", "Pas", "Mahal"], answer: 1 },
+            { question: "Baca undangan: '생일 파티 토요일 6시 제 집'<br>Pesta ulang tahun diadakan hari...", options: ["Jumat", "Sabtu", "Minggu", "Senin"], answer: 1 },
+            { question: "Baca: '지하철 2호선 타세요.'<br>Naik jalur subway nomor...", options: ["1", "2", "3", "4"], answer: 1 },
+            { question: "Baca resep: '먼저 밥을 짓고, 김치를 넣어요.'<br>Langkah pertama adalah...", options: ["Potong kimchi", "Masak nasi", "Tambah telur", "Aduk"], answer: 1 },
+            { question: "Baca: '저는 한국어가 조금 할 수 있어요.'<br>Pembicara bisa bahasa Korea...", options: ["Lancar", "Sedikit", "Tidak sama sekali", "Seperti native"], answer: 1 },
+            { question: "Baca iklan: '특별 할인! 50% OFF'<br>Diskon berapa persen?", options: ["30%", "40%", "50%", "70%"], answer: 2 },
+            { question: "Baca: '가족은 4명이에요. 아버지, 어머니, 언니, 나.'<br>Pembicara punya kakak...", options: ["Adik laki", "Adik perempuan", "Kakak perempuan", "Kakak laki"], answer: 2 },
+            { question: "Baca: '오늘은 2025년 12월 28일 일요일입니다.'<br>Hari ini adalah hari...", options: ["Senin", "Sabtu", "Minggu", "Jumat"], answer: 2 }
+        ];
 
         function loadQuestion() {
             const q = questions[currentQ];
@@ -81,31 +124,33 @@
             });
 
             // Gambar
-            const imgElem = document.getElementById('questionImg');
+            const img = document.getElementById('questionImg');
             if (q.image) {
-                imgElem.src = q.image;
-                imgElem.style.display = 'block';
+                img.src = q.image;
+                img.style.display = 'block';
             } else {
-                imgElem.style.display = 'none';
+                img.style.display = 'none';
             }
 
-            // Audio control untuk listening
+            // Audio
             if (currentQ < 20 && q.audio) {
-                const audioPlayer = document.getElementById('audioPlayer');
-                audioPlayer.src = q.audio;
+                const audio = document.getElementById('audioPlayer');
+                audio.src = q.audio;
                 document.getElementById('audioControl').style.display = 'block';
-
-                playCount = answers[currentQ] !== null ? 0 : 2; // Reset count kalau soal baru, atau kalau udah dijawab biar bisa review
+                playCount = 2;
                 updatePlayCount();
 
-                audioPlayer.onplay = () => {
-                    if (playCount > 0) {
-                        playCount--;
-                        updatePlayCount();
-                    }
+                audio.onplay = () => {
+                    if (playCount > 0) playCount--;
+                    updatePlayCount();
                 };
 
-                document.getElementById('replayBtn').onclick = replayAudio;
+                document.getElementById('replayBtn').onclick = () => {
+                    if (playCount > 0) {
+                        audio.currentTime = 0;
+                        audio.play();
+                    }
+                };
             } else {
                 document.getElementById('audioControl').style.display = 'none';
             }
@@ -115,32 +160,16 @@
         }
 
         function updatePlayCount() {
-            const countElem = document.getElementById('replayCount');
-            const player = document.getElementById('audioPlayer');
-            const replayBtn = document.getElementById('replayBtn');
-            countElem.textContent = `Sisa kesempatan dengar: ${playCount}`;
-            if (playCount === 0) {
-                player.disabled = true;
-                replayBtn.disabled = true;
-                player.controls = false; // Hide controls kalau habis
-            } else {
-                player.disabled = false;
-                replayBtn.disabled = false;
-                player.controls = true;
-            }
+            document.getElementById('replayCount').textContent = `Sisa kesempatan dengar: ${playCount}`;
+            const disabled = playCount === 0;
+            document.getElementById('audioPlayer').disabled = disabled;
+            document.getElementById('replayBtn').disabled = disabled;
+            if (disabled) document.getElementById('audioPlayer').controls = false;
         }
 
-        function replayAudio() {
-            if (playCount > 0) {
-                const audioPlayer = document.getElementById('audioPlayer');
-                audioPlayer.currentTime = 0;
-                audioPlayer.play();
-            }
-        }
-
-        function goPrev() { if (currentQ > 0) window.location.href = `question.html?q=${currentQ - 1}`; }
-        function goNext() { if (currentQ < 39) window.location.href = `question.html?q=${currentQ + 1}`; }
-        function goBack() { window.location.href = 'exam.html'; }
+        document.getElementById('prevBtn').onclick = () => { if (currentQ > 0) window.location.href = `question.html?q=${currentQ - 1}`; };
+        document.getElementById('nextBtn').onclick = () => { if (currentQ < 39) window.location.href = `question.html?q=${currentQ + 1}`; };
+        document.querySelector('.back-btn').onclick = () => window.location.href = 'exam.html';
 
         loadQuestion();
     </script>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Rekap Hasil Ujian</title>
+    <title>Admin - Rekap Hasil</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
@@ -11,54 +11,35 @@
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
         th { background: #3498db; color: white; }
-        button { background: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px; display: block; width: 100%; }
+        button { background: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px; width: 100%; }
         button:hover { background: #c0392b; }
+        .logout { background: #95a5a6; margin-top: 10px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Rekap Hasil Ujian Siswa</h1>
-        <table id="recordsTable">
-            <thead>
-                <tr>
-                    <th>Nama Siswa</th>
-                    <th>Skor</th>
-                    <th>Tanggal</th>
-                </tr>
-            </thead>
+        <h1>Rekap Hasil Ujian</h1>
+        <table id="table">
+            <thead><tr><th>Nama</th><th>Skor</th><th>Waktu</th></tr></thead>
             <tbody></tbody>
         </table>
-        <button onclick="clearRecords()">Hapus Semua Rekam</button>
-        <button onclick="logout()" style="background: #95a5a6; margin-top: 10px;">Logout</button>
+        <button onclick="if(confirm('Hapus semua data?')){localStorage.removeItem('testRecords'); load();}">Hapus Semua</button>
+        <button class="logout" onclick="localStorage.removeItem('isAdmin'); window.location.href='index.html'">Logout</button>
     </div>
 
     <script>
-        if (localStorage.getItem('isAdmin') !== 'true') { alert('Akses ditolak!'); window.location.href = 'login.html'; }
-
-        function loadRecords() {
+        if (localStorage.getItem('isAdmin') !== 'true') { window.location.href = 'index.html'; }
+        function load() {
             const records = JSON.parse(localStorage.getItem('testRecords') || '[]');
-            const tbody = document.querySelector('#recordsTable tbody');
+            const tbody = document.querySelector('tbody');
             tbody.innerHTML = '';
-            records.forEach(record => {
+            records.forEach(r => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${record.name}</td><td>${record.score}/100</td><td>${record.date}</td>`;
+                tr.innerHTML = `<td>${r.name}</td><td>${r.score}/100</td><td>${r.date}</td>`;
                 tbody.appendChild(tr);
             });
         }
-
-        function clearRecords() {
-            if (confirm('Yakin hapus semua rekam?')) {
-                localStorage.removeItem('testRecords');
-                loadRecords();
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('isAdmin');
-            window.location.href = 'login.html';
-        }
-
-        loadRecords();
+        load();
     </script>
 </body>
 </html>
